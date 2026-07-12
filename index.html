@@ -243,7 +243,16 @@
     font-size: calc(1.85rem * var(--he-scale, 1));
     line-height: 1.6;
     margin: 0 0 0.45rem;
-    transition: font-size 120ms ease;
+    padding: 0.1rem 0.3rem;
+    margin-inline: -0.3rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: font-size 120ms ease, background 120ms ease;
+  }
+  .verse-he:hover { background: var(--accent-soft); }
+  .verse-he:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
   }
   .verse-en {
     direction: ltr;
@@ -252,7 +261,9 @@
     line-height: 1.55;
     color: var(--ink-soft);
     margin: 0;
+    display: none;
   }
+  .verse-block.expanded .verse-en { display: block; }
   .status-msg {
     direction: ltr;
     font-family: var(--font-ui);
@@ -325,7 +336,7 @@
   <div class="shell">
     <p class="eyebrow">Prototype — installable</p>
     <h1>Hebrew · English siddur, verse by verse</h1>
-    <p class="lede">Every prayer is pulled from Sefaria's public library and shown Hebrew-then-English, verse by verse. Download them all once for offline reading.</p>
+    <p class="lede">Every prayer is pulled from Sefaria's public library, one Hebrew verse under another. Tap a verse to reveal its English translation. Download them all once for offline reading.</p>
 
     <div class="download-banner">
       <span id="download-status">Checking what's downloaded…</span>
@@ -456,9 +467,23 @@
       const he = document.createElement("p");
       he.className = "verse-he";
       he.textContent = heVerses[i] || "";
+      he.setAttribute("role", "button");
+      he.setAttribute("tabindex", "0");
+      he.setAttribute("aria-expanded", "false");
       const en = document.createElement("p");
       en.className = "verse-en";
       en.textContent = enVerses[i] || "";
+      const toggle = () => {
+        const expanded = block.classList.toggle("expanded");
+        he.setAttribute("aria-expanded", String(expanded));
+      };
+      he.addEventListener("click", toggle);
+      he.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      });
       block.appendChild(he);
       block.appendChild(en);
       versesEl.appendChild(block);
