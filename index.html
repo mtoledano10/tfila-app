@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Siddur Interlinear</title>
+<meta name="description" content="Hebrew-English word-by-word prayer book" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="theme-color" content="#efe9db" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<style>
+  :root {
+    --bg: #efe9db;
+    --surface: #fbf8f1;
+    --surface-2: #f3eee0;
+    --ink: #201d18;
+    --ink-soft: #6b6252;
+    --accent: #8a6a2a;
+    --accent-soft: rgba(138,106,42,0.14);
+    --accent-strong: #6e5320;
+    --rule: #d9cfb8;
+    --shadow: rgba(60,50,25,0.14);
+
+    --font-display: "Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --font-hebrew: "Frank Ruhl Libre","David Libre","Times New Roman",serif;
+    --font-ui: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16130f;
+      --surface: #201c16;
+      --surface-2: #241f18;
+      --ink: #ece4d2;
+      --ink-soft: #a89a7c;
+      --accent: #d1a94e;
+      --accent-soft: rgba(209,169,78,0.18);
+      --accent-strong: #e6c471;
+      --rule: #3a3325;
+      --shadow: rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16130f;
+    --surface: #201c16;
+    --surface-2: #241f18;
+    --ink: #ece4d2;
+    --ink-soft: #a89a7c;
+    --accent: #d1a94e;
+    --accent-soft: rgba(209,169,78,0.18);
+    --accent-strong: #e6c471;
+    --rule: #3a3325;
+    --shadow: rgba(0,0,0,0.4);
+  }
+  :root[data-theme="light"] {
+    --bg: #efe9db;
+    --surface: #fbf8f1;
+    --surface-2: #f3eee0;
+    --ink: #201d18;
+    --ink-soft: #6b6252;
+    --accent: #8a6a2a;
+    --accent-soft: rgba(138,106,42,0.14);
+    --accent-strong: #6e5320;
+    --rule: #d9cfb8;
+    --shadow: rgba(60,50,25,0.14);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+
+  .wrap {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 3rem 1.25rem 4rem;
+    font-family: var(--font-ui);
+    color: var(--ink);
+  }
+
+  .shell { width: 100%; max-width: 640px; }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    text-wrap: balance;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin: 0 0 1.75rem;
+    max-width: 46ch;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.9rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+  .control-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .control-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-right: 0.35rem;
+    align-self: center;
+  }
+  .pill {
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .pill:hover { border-color: var(--accent); }
+  .pill[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--surface);
+    font-weight: 600;
+  }
+  .pill:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+
+  .page {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow), 0 10px 30px -14px var(--shadow);
+    padding: 2.1rem 2rem 1.9rem;
+  }
+
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-head .he {
+    font-family: var(--font-hebrew);
+    font-size: 1.5rem;
+    direction: rtl;
+  }
+  .page-head .en {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .hebrew-line {
+    direction: rtl;
+    font-family: var(--font-hebrew);
+    font-size: 2.05rem;
+    line-height: 2.3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.05rem;
+    margin-bottom: 1.6rem;
+  }
+  .word {
+    display: inline-block;
+    padding: 0.08rem 0.2rem;
+    border-radius: 4px;
+    border-bottom: 1.5px dotted var(--accent);
+    opacity: 0.92;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  .word:hover { background: var(--accent-soft); opacity: 1; }
+  .word:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+  .word[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-bottom-style: solid;
+    color: var(--accent-strong);
+    opacity: 1;
+  }
+
+  .inspector {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1rem 1.15rem;
+    min-height: 4.7rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .inspector.empty { color: var(--ink-soft); font-size: 0.85rem; font-style: italic; }
+  .inspector .ins-he {
+    font-family: var(--font-hebrew);
+    font-size: 1.9rem;
+    direction: rtl;
+    min-width: 2.5ch;
+  }
+  .inspector .ins-text { display: flex; flex-direction: column; gap: 0.15rem; }
+  .inspector .ins-translit {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .inspector .ins-gloss { font-size: 1.02rem; font-weight: 600; }
+
+  .full-translation {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .full-translation .control-label { display: block; margin-bottom: 0.5rem; }
+  .full-translation p {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .note {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+  .note strong { color: var(--ink); }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.1rem;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+  }
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .status-bar[data-state="offline"] .status-dot { background: #b3452f; }
+
+  .install-hint {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--surface-2);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .install-hint.visible { display: block; }
+  .install-hint button {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    margin-left: 0.5rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent-strong);
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word, .pill { transition: none; }
+  }
+
+  @media (max-width: 480px) {
+    .page { padding: 1.6rem 1.2rem 1.5rem; }
+    .hebrew-line { font-size: 1.7rem; }
+    .page-head { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shell">
+    <p class="eyebrow">Prototype — installable</p>
+    <h1>Hebrew · English interlinear, word by word</h1>
+    <p class="lede">Two prayers, hand-aligned data, works offline once installed. Click or tap a Hebrew word to see its translation.</p>
+
+    <div class="controls">
+      <div class="control-group" id="prayer-group">
+        <span class="control-label">Prayer</span>
+      </div>
+      <div class="control-group" id="version-group"></div>
+    </div>
+
+    <div class="page">
+      <div class="page-head">
+        <span class="he" id="head-he"></span>
+        <span class="en" id="head-en"></span>
+      </div>
+
+      <div class="hebrew-line" id="hebrew-line"></div>
+
+      <div class="inspector empty" id="inspector">
+        Tap a word to see its translation.
+      </div>
+
+      <div class="full-translation">
+        <span class="control-label">Full translation</span>
+        <p id="full-translation-text"></p>
+      </div>
+    </div>
+
+    <div class="status-bar" id="status-bar" data-state="unknown">
+      <span class="status-dot"></span>
+      <span id="status-text">Checking connection…</span>
+    </div>
+
+    <div class="install-hint" id="install-hint">
+      Add this to your home screen for one-tap offline access.
+      <button id="install-btn" type="button">Install</button>
+    </div>
+
+    <p class="note">
+      <strong>What this proves:</strong> click-a-word works as soon as a text is aligned word for word, and the app shell now installs and works offline.
+      <strong>What it doesn't prove yet:</strong> the alignment here is hand-entered for 2 prayers — covering a full siddur means either hand-aligning prayer by prayer, or building an extra layer on top of raw sources (e.g. Sefaria) that only give Hebrew and English at the verse level, not the word level.
+    </p>
+  </div>
+</div>
+
+<script>
+  const PRAYERS = {
+    modeh: {
+      nameHe: "מוֹדֶה אֲנִי",
+      nameEn: "Modeh Ani",
+      hasVersion: true,
+      versions: {
+        m: {
+          label: "Masculine",
+          words: [
+            { he: "מוֹדֶה", translit: "Modeh", gloss: "I thank / am grateful" },
+            { he: "אֲנִי", translit: "Ani", gloss: "I" },
+            { he: "לְפָנֶיךָ", translit: "Lefanecha", gloss: "before You" },
+            { he: "מֶלֶךְ", translit: "Melech", gloss: "King" },
+            { he: "חַי", translit: "Chai", gloss: "living" },
+            { he: "וְקַיָּם,", translit: "V'kayam", gloss: "and enduring" },
+            { he: "שֶׁהֶחֱזַרְתָּ", translit: "Shehechezarta", gloss: "for You have returned" },
+            { he: "בִּי", translit: "Bi", gloss: "within me" },
+            { he: "נִשְׁמָתִי", translit: "Nishmati", gloss: "my soul" },
+            { he: "בְּחֶמְלָה,", translit: "B'chemlah", gloss: "with compassion" },
+            { he: "רַבָּה", translit: "Rabbah", gloss: "great" },
+            { he: "אֱמוּנָתֶךָ.", translit: "Emunatecha", gloss: "is Your faithfulness" }
+          ]
+        },
+        f: {
+          label: "Feminine",
+          words: [
+            { he: "מוֹדָה", translit: "Modah", gloss: "I thank / am grateful" },
+            { he: "אֲנִי", translit: "Ani", gloss: "I" },
+            { he: "לְפָנֶיךָ", translit: "Lefanecha", gloss: "before You" },
+            { he: "מֶלֶךְ", translit: "Melech", gloss: "King" },
+            { he: "חַי", translit: "Chai", gloss: "living" },
+            { he: "וְקַיָּם,", translit: "V'kayam", gloss: "and enduring" },
+            { he: "שֶׁהֶחֱזַרְתָּ", translit: "Shehechezarta", gloss: "for You have returned" },
+            { he: "בִּי", translit: "Bi", gloss: "within me" },
+            { he: "נִשְׁמָתִי", translit: "Nishmati", gloss: "my soul" },
+            { he: "בְּחֶמְלָה,", translit: "B'chemlah", gloss: "with compassion" },
+            { he: "רַבָּה", translit: "Rabbah", gloss: "great" },
+            { he: "אֱמוּנָתֶךָ.", translit: "Emunatecha", gloss: "is Your faithfulness" }
+          ]
+        }
+      },
+      fullTranslation: "I gratefully thank You, living and eternal King, for You have returned my soul within me with compassion — great is Your faithfulness."
+    },
+    shema: {
+      nameHe: "שְׁמַע יִשְׂרָאֵל",
+      nameEn: "Shema Yisrael",
+      hasVersion: false,
+      words: [
+        { he: "שְׁמַע", translit: "Shema", gloss: "Hear" },
+        { he: "יִשְׂרָאֵל,", translit: "Yisrael", gloss: "Israel" },
+        { he: "ה׳", translit: "Adonai", gloss: "the LORD" },
+        { he: "אֱלֹהֵינוּ,", translit: "Eloheinu", gloss: "our God" },
+        { he: "ה׳", translit: "Adonai", gloss: "the LORD" },
+        { he: "אֶחָד.", translit: "Echad", gloss: "is One" }
+      ],
+      fullTranslation: "Hear, O Israel: the LORD is our God, the LORD is One."
+    }
+  };
+
+  let state = { prayer: "modeh", version: "m" };
+
+  const prayerGroup = document.getElementById("prayer-group");
+  const versionGroup = document.getElementById("version-group");
+  const headHe = document.getElementById("head-he");
+  const headEn = document.getElementById("head-en");
+  const hebrewLine = document.getElementById("hebrew-line");
+  const inspector = document.getElementById("inspector");
+  const fullTranslationText = document.getElementById("full-translation-text");
+
+  function currentWords() {
+    const p = PRAYERS[state.prayer];
+    return p.hasVersion ? p.versions[state.version].words : p.words;
+  }
+
+  function renderControls() {
+    prayerGroup.querySelectorAll(".pill").forEach(el => el.remove());
+    Object.entries(PRAYERS).forEach(([key, p]) => {
+      const btn = document.createElement("button");
+      btn.className = "pill";
+      btn.type = "button";
+      btn.textContent = p.nameEn;
+      btn.setAttribute("aria-pressed", key === state.prayer ? "true" : "false");
+      btn.addEventListener("click", () => {
+        state.prayer = key;
+        if (PRAYERS[key].hasVersion) state.version = "m";
+        render();
+      });
+      prayerGroup.appendChild(btn);
+    });
+
+    versionGroup.innerHTML = "";
+    const p = PRAYERS[state.prayer];
+    if (p.hasVersion) {
+      const label = document.createElement("span");
+      label.className = "control-label";
+      label.textContent = "Version";
+      versionGroup.appendChild(label);
+      Object.entries(p.versions).forEach(([vkey, v]) => {
+        const btn = document.createElement("button");
+        btn.className = "pill";
+        btn.type = "button";
+        btn.textContent = v.label;
+        btn.setAttribute("aria-pressed", vkey === state.version ? "true" : "false");
+        btn.addEventListener("click", () => {
+          state.version = vkey;
+          render();
+        });
+        versionGroup.appendChild(btn);
+      });
+    }
+  }
+
+  function showInspector(word) {
+    if (!word) {
+      inspector.classList.add("empty");
+      inspector.innerHTML = "Tap a word to see its translation.";
+      return;
+    }
+    inspector.classList.remove("empty");
+    inspector.innerHTML = "";
+    const he = document.createElement("span");
+    he.className = "ins-he";
+    he.textContent = word.he;
+    const textWrap = document.createElement("span");
+    textWrap.className = "ins-text";
+    const translit = document.createElement("span");
+    translit.className = "ins-translit";
+    translit.textContent = word.translit;
+    const gloss = document.createElement("span");
+    gloss.className = "ins-gloss";
+    gloss.textContent = word.gloss;
+    textWrap.appendChild(translit);
+    textWrap.appendChild(gloss);
+    inspector.appendChild(he);
+    inspector.appendChild(textWrap);
+  }
+
+  function renderHebrew() {
+    hebrewLine.innerHTML = "";
+    const words = currentWords();
+    words.forEach((word, idx) => {
+      const span = document.createElement("span");
+      span.className = "word";
+      span.textContent = word.he;
+      span.setAttribute("role", "button");
+      span.setAttribute("tabindex", "0");
+      span.setAttribute("aria-pressed", "false");
+      span.addEventListener("click", () => selectWord(idx));
+      span.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectWord(idx);
+        }
+      });
+      hebrewLine.appendChild(span);
+    });
+    showInspector(null);
+  }
+
+  function selectWord(idx) {
+    const words = currentWords();
+    hebrewLine.querySelectorAll(".word").forEach((el, i) => {
+      el.setAttribute("aria-pressed", i === idx ? "true" : "false");
+    });
+    showInspector(words[idx]);
+  }
+
+  function render() {
+    renderControls();
+    const p = PRAYERS[state.prayer];
+    headHe.textContent = p.nameHe;
+    headEn.textContent = p.nameEn;
+    fullTranslationText.textContent = p.fullTranslation;
+    renderHebrew();
+  }
+
+  render();
+
+  const statusBar = document.getElementById("status-bar");
+  const statusText = document.getElementById("status-text");
+  function updateStatus() {
+    const online = navigator.onLine;
+    statusBar.dataset.state = online ? "online" : "offline";
+    statusText.textContent = online ? "Online" : "Offline — showing cached prayers";
+  }
+  window.addEventListener("online", updateStatus);
+  window.addEventListener("offline", updateStatus);
+  updateStatus();
+
+  let deferredInstallPrompt = null;
+  const installHint = document.getElementById("install-hint");
+  const installBtn = document.getElementById("install-btn");
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    installHint.classList.add("visible");
+  });
+  installBtn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installHint.classList.remove("visible");
+  });
+  window.addEventListener("appinstalled", () => {
+    installHint.classList.remove("visible");
+  });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch((err) => {
+        console.error("Service worker registration failed", err);
+      });
+    });
+  }
+</script>
+</body>
+</html>
