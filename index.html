@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Siddur Interlinear</title>
-<meta name="description" content="Hebrew-English word-by-word prayer book" />
+<meta name="description" content="Hebrew-English prayer book, verse by verse, offline-ready" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="icons/icon-192.png" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
@@ -101,9 +101,24 @@
     color: var(--ink-soft);
     font-size: 0.92rem;
     line-height: 1.5;
-    margin: 0 0 1.75rem;
+    margin: 0 0 1.5rem;
     max-width: 46ch;
   }
+
+  .download-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--surface-2);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .download-banner button { flex-shrink: 0; }
 
   .controls {
     display: flex;
@@ -143,6 +158,17 @@
     outline: 2px solid var(--accent-strong);
     outline-offset: 2px;
   }
+  .cached-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--rule);
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+  .cached-dot.on { background: var(--accent); }
+  .pill[aria-pressed="true"] .cached-dot.on { background: var(--surface); }
 
   .page {
     background: var(--surface);
@@ -166,29 +192,12 @@
     font-size: 1.5rem;
     direction: rtl;
   }
-  .page-head .en-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-  }
   .page-head .en {
     font-size: 0.78rem;
     color: var(--ink-soft);
     font-style: italic;
+    white-space: nowrap;
   }
-  .source-tag {
-    display: none;
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent-strong);
-    background: var(--accent-soft);
-    padding: 0.2rem 0.5rem;
-    border-radius: 999px;
-    font-style: normal;
-  }
-  .source-tag.visible { display: inline-block; }
 
   .text-size-control {
     display: flex;
@@ -218,91 +227,38 @@
   }
   .size-btn:disabled { opacity: 0.35; cursor: default; }
 
-  .hebrew-line {
+  .verse-block {
+    margin-bottom: 1.3rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .verse-block:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .verse-he {
     direction: rtl;
     font-family: var(--font-hebrew);
-    font-size: calc(2.05rem * var(--he-scale, 1));
-    line-height: 2.3;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.15rem 0.05rem;
-    margin-bottom: 1.6rem;
+    font-size: calc(1.85rem * var(--he-scale, 1));
+    line-height: 1.6;
+    margin: 0 0 0.45rem;
     transition: font-size 120ms ease;
   }
-  .word {
-    display: inline-block;
-    padding: 0.08rem 0.2rem;
-    border-radius: 4px;
-    border-bottom: 1.5px dotted var(--accent);
-    opacity: 0.92;
-    cursor: pointer;
-    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  .verse-en {
+    direction: ltr;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
   }
-  .word:hover { background: var(--accent-soft); opacity: 1; }
-  .word:focus-visible {
-    outline: 2px solid var(--accent-strong);
-    outline-offset: 2px;
-  }
-  .word[aria-pressed="true"] {
-    background: var(--accent-soft);
-    border-bottom-style: solid;
-    color: var(--accent-strong);
-    opacity: 1;
-  }
-
-  .hebrew-line.verses {
-    display: block;
-  }
-  .hebrew-line.verses .verse {
-    margin: 0 0 0.9rem;
-  }
-  .hebrew-line .status-msg {
-    display: block;
+  .status-msg {
     direction: ltr;
     font-family: var(--font-ui);
     font-size: 0.9rem;
     font-style: italic;
     color: var(--ink-soft);
-  }
-
-  .inspector {
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    padding: 1rem 1.15rem;
-    min-height: 4.7rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .inspector.empty { color: var(--ink-soft); font-size: 0.85rem; font-style: italic; }
-  .inspector .ins-he {
-    font-family: var(--font-hebrew);
-    font-size: 1.9rem;
-    direction: rtl;
-    min-width: 2.5ch;
-  }
-  .inspector .ins-text { display: flex; flex-direction: column; gap: 0.15rem; }
-  .inspector .ins-translit {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-  }
-  .inspector .ins-gloss { font-size: 1.02rem; font-weight: 600; }
-
-  .full-translation {
-    padding-top: 1.1rem;
-    border-top: 1px solid var(--rule);
-  }
-  .full-translation .control-label { display: block; margin-bottom: 0.5rem; }
-  .full-translation p {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    line-height: 1.6;
-    margin: 0;
-    color: var(--ink);
   }
 
   .note {
@@ -354,12 +310,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .word, .pill { transition: none; }
+    .pill { transition: none; }
   }
 
   @media (max-width: 480px) {
     .page { padding: 1.6rem 1.2rem 1.5rem; }
-    .hebrew-line { font-size: calc(1.7rem * var(--he-scale, 1)); }
+    .verse-he { font-size: calc(1.5rem * var(--he-scale, 1)); }
     .page-head { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
   }
 </style>
@@ -368,23 +324,24 @@
 <div class="wrap">
   <div class="shell">
     <p class="eyebrow">Prototype — installable</p>
-    <h1>Hebrew · English interlinear, word by word</h1>
-    <p class="lede">Hand-aligned prayers give word-by-word taps; prayers pulled live from Sefaria show full text only, and are cached for offline reading after the first load.</p>
+    <h1>Hebrew · English siddur, verse by verse</h1>
+    <p class="lede">Every prayer is pulled from Sefaria's public library and shown Hebrew-then-English, verse by verse. Download them all once for offline reading.</p>
+
+    <div class="download-banner">
+      <span id="download-status">Checking what's downloaded…</span>
+      <button id="download-btn" class="pill" type="button">Download all</button>
+    </div>
 
     <div class="controls">
       <div class="control-group" id="prayer-group">
         <span class="control-label">Prayer</span>
       </div>
-      <div class="control-group" id="version-group"></div>
     </div>
 
     <div class="page">
       <div class="page-head">
         <span class="he" id="head-he"></span>
-        <span class="en-wrap">
-          <span class="en" id="head-en"></span>
-          <span class="source-tag" id="source-tag">via Sefaria</span>
-        </span>
+        <span class="en" id="head-en"></span>
       </div>
 
       <div class="text-size-control">
@@ -393,16 +350,7 @@
         <button id="size-inc" class="size-btn" type="button" aria-label="Increase text size">A+</button>
       </div>
 
-      <div class="hebrew-line" id="hebrew-line"></div>
-
-      <div class="inspector empty" id="inspector">
-        Tap a word to see its translation.
-      </div>
-
-      <div class="full-translation">
-        <span class="control-label">Full translation</span>
-        <p id="full-translation-text"></p>
-      </div>
+      <div id="verses"></div>
     </div>
 
     <div class="status-bar" id="status-bar" data-state="unknown">
@@ -416,86 +364,33 @@
     </div>
 
     <p class="note">
-      <strong>What this proves:</strong> click-a-word works as soon as a text is aligned word for word, and the app shell now installs and works offline.
-      <strong>What it doesn't prove yet:</strong> the alignment here is hand-entered for 2 prayers — covering a full siddur means either hand-aligning prayer by prayer, or building an extra layer on top of raw sources (e.g. Sefaria) that only give Hebrew and English at the verse level, not the word level.
+      <strong>What this proves:</strong> a real, growing set of prayers loaded straight from Sefaria, each verse paired with its translation, downloadable in one tap and readable offline.
+      <strong>What's traded off:</strong> no more word-by-word tap — Sefaria only aligns text at the verse level, so going back to word-by-word would mean hand-aligning again, prayer by prayer.
     </p>
   </div>
 </div>
 
 <script>
-  const PRAYERS = {
-    modeh: {
-      nameHe: "מוֹדֶה אֲנִי",
-      nameEn: "Modeh Ani",
-      hasVersion: true,
-      versions: {
-        m: {
-          label: "Masculine",
-          words: [
-            { he: "מוֹדֶה", translit: "Modeh", gloss: "I thank / am grateful" },
-            { he: "אֲנִי", translit: "Ani", gloss: "I" },
-            { he: "לְפָנֶיךָ", translit: "Lefanecha", gloss: "before You" },
-            { he: "מֶלֶךְ", translit: "Melech", gloss: "King" },
-            { he: "חַי", translit: "Chai", gloss: "living" },
-            { he: "וְקַיָּם,", translit: "V'kayam", gloss: "and enduring" },
-            { he: "שֶׁהֶחֱזַרְתָּ", translit: "Shehechezarta", gloss: "for You have returned" },
-            { he: "בִּי", translit: "Bi", gloss: "within me" },
-            { he: "נִשְׁמָתִי", translit: "Nishmati", gloss: "my soul" },
-            { he: "בְּחֶמְלָה,", translit: "B'chemlah", gloss: "with compassion" },
-            { he: "רַבָּה", translit: "Rabbah", gloss: "great" },
-            { he: "אֱמוּנָתֶךָ.", translit: "Emunatecha", gloss: "is Your faithfulness" }
-          ]
-        },
-        f: {
-          label: "Feminine",
-          words: [
-            { he: "מוֹדָה", translit: "Modah", gloss: "I thank / am grateful" },
-            { he: "אֲנִי", translit: "Ani", gloss: "I" },
-            { he: "לְפָנֶיךָ", translit: "Lefanecha", gloss: "before You" },
-            { he: "מֶלֶךְ", translit: "Melech", gloss: "King" },
-            { he: "חַי", translit: "Chai", gloss: "living" },
-            { he: "וְקַיָּם,", translit: "V'kayam", gloss: "and enduring" },
-            { he: "שֶׁהֶחֱזַרְתָּ", translit: "Shehechezarta", gloss: "for You have returned" },
-            { he: "בִּי", translit: "Bi", gloss: "within me" },
-            { he: "נִשְׁמָתִי", translit: "Nishmati", gloss: "my soul" },
-            { he: "בְּחֶמְלָה,", translit: "B'chemlah", gloss: "with compassion" },
-            { he: "רַבָּה", translit: "Rabbah", gloss: "great" },
-            { he: "אֱמוּנָתֶךָ.", translit: "Emunatecha", gloss: "is Your faithfulness" }
-          ]
-        }
-      },
-      fullTranslation: "I gratefully thank You, living and eternal King, for You have returned my soul within me with compassion — great is Your faithfulness."
-    },
-    shema: {
-      nameHe: "שְׁמַע יִשְׂרָאֵל",
-      nameEn: "Shema Yisrael",
-      hasVersion: false,
-      words: [
-        { he: "שְׁמַע", translit: "Shema", gloss: "Hear" },
-        { he: "יִשְׂרָאֵל,", translit: "Yisrael", gloss: "Israel" },
-        { he: "ה׳", translit: "Adonai", gloss: "the LORD" },
-        { he: "אֱלֹהֵינוּ,", translit: "Eloheinu", gloss: "our God" },
-        { he: "ה׳", translit: "Adonai", gloss: "the LORD" },
-        { he: "אֶחָד.", translit: "Echad", gloss: "is One" }
-      ],
-      fullTranslation: "Hear, O Israel: the LORD is our God, the LORD is One."
-    },
-    ashrei: {
-      nameHe: "אַשְׁרֵי",
-      nameEn: "Ashrei",
-      hasVersion: false,
-      source: "sefaria",
-      sefariaRef: "Psalms.145"
-    }
-  };
+  const PRAYERS = [
+    { id: "modeh", nameHe: "מוֹדֶה אֲנִי", nameEn: "Modeh Ani", ref: "Siddur Ashkenaz, Weekday, Shacharit, Preparatory Prayers, Modeh Ani" },
+    { id: "asher-yatzar", nameHe: "אֲשֶׁר יָצַר", nameEn: "Asher Yatzar", ref: "Siddur Ashkenaz, Weekday, Shacharit, Preparatory Prayers, Asher Yatzar" },
+    { id: "elokai-neshama", nameHe: "אֱלֹהַי נְשָׁמָה", nameEn: "Elokai Neshama", ref: "Siddur Ashkenaz, Weekday, Shacharit, Preparatory Prayers, Elokai Neshama" },
+    { id: "shema", nameHe: "שְׁמַע יִשְׂרָאֵל", nameEn: "Shema Yisrael", ref: "Deuteronomy.6.4-9" },
+    { id: "ashrei", nameHe: "אַשְׁרֵי", nameEn: "Ashrei", ref: "Psalms.145" },
+    { id: "aleinu", nameHe: "עָלֵינוּ", nameEn: "Aleinu", ref: "Siddur Ashkenaz, Shabbat, Maariv, Aleinu" },
+    { id: "kaddish", nameHe: "קַדִּישׁ יָתוֹם", nameEn: "Mourner's Kaddish", ref: "Siddur Ashkenaz, Kaddish, Mourner's Kaddish" }
+  ];
 
   function stripHtml(html) {
     const doc = new DOMParser().parseFromString(html, "text/html");
     return doc.body.textContent.replace(/\s+/g, " ").trim();
   }
 
+  function cacheKeyFor(ref) { return "sefaria:" + ref; }
+  function isCached(ref) { return !!localStorage.getItem(cacheKeyFor(ref)); }
+
   async function fetchSefariaText(ref) {
-    const cacheKey = "sefaria:" + ref;
+    const cacheKey = cacheKeyFor(ref);
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       try { return JSON.parse(cached); } catch (e) { /* fall through to refetch */ }
@@ -511,169 +406,107 @@
     return result;
   }
 
-  let state = { prayer: "modeh", version: "m" };
+  const state = { prayerId: PRAYERS[0].id };
 
   const prayerGroup = document.getElementById("prayer-group");
-  const versionGroup = document.getElementById("version-group");
   const headHe = document.getElementById("head-he");
   const headEn = document.getElementById("head-en");
-  const sourceTag = document.getElementById("source-tag");
-  const hebrewLine = document.getElementById("hebrew-line");
-  const inspector = document.getElementById("inspector");
-  const fullTranslationText = document.getElementById("full-translation-text");
+  const versesEl = document.getElementById("verses");
+  const downloadStatus = document.getElementById("download-status");
+  const downloadBtn = document.getElementById("download-btn");
 
-  function currentWords() {
-    const p = PRAYERS[state.prayer];
-    return p.hasVersion ? p.versions[state.version].words : p.words;
+  function currentPrayer() {
+    return PRAYERS.find((p) => p.id === state.prayerId);
   }
 
-  function renderControls() {
-    prayerGroup.querySelectorAll(".pill").forEach(el => el.remove());
-    Object.entries(PRAYERS).forEach(([key, p]) => {
+  function renderPrayerPills() {
+    prayerGroup.querySelectorAll(".pill").forEach((el) => el.remove());
+    PRAYERS.forEach((p) => {
       const btn = document.createElement("button");
       btn.className = "pill";
       btn.type = "button";
-      btn.textContent = p.nameEn;
-      btn.setAttribute("aria-pressed", key === state.prayer ? "true" : "false");
+      btn.setAttribute("aria-pressed", p.id === state.prayerId ? "true" : "false");
+      const dot = document.createElement("span");
+      dot.className = "cached-dot" + (isCached(p.ref) ? " on" : "");
+      btn.appendChild(dot);
+      btn.appendChild(document.createTextNode(p.nameEn));
       btn.addEventListener("click", () => {
-        state.prayer = key;
-        if (PRAYERS[key].hasVersion) state.version = "m";
-        render();
+        state.prayerId = p.id;
+        renderPrayerPills();
+        loadAndShow(p);
       });
       prayerGroup.appendChild(btn);
     });
+  }
 
-    versionGroup.innerHTML = "";
-    const p = PRAYERS[state.prayer];
-    if (p.hasVersion) {
-      const label = document.createElement("span");
-      label.className = "control-label";
-      label.textContent = "Version";
-      versionGroup.appendChild(label);
-      Object.entries(p.versions).forEach(([vkey, v]) => {
-        const btn = document.createElement("button");
-        btn.className = "pill";
-        btn.type = "button";
-        btn.textContent = v.label;
-        btn.setAttribute("aria-pressed", vkey === state.version ? "true" : "false");
-        btn.addEventListener("click", () => {
-          state.version = vkey;
-          render();
-        });
-        versionGroup.appendChild(btn);
-      });
+  function showStatusMessage(message) {
+    versesEl.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "status-msg";
+    p.textContent = message;
+    versesEl.appendChild(p);
+  }
+
+  function renderVersePairs(heVerses, enVerses) {
+    versesEl.innerHTML = "";
+    const count = Math.max(heVerses.length, enVerses.length);
+    for (let i = 0; i < count; i++) {
+      const block = document.createElement("div");
+      block.className = "verse-block";
+      const he = document.createElement("p");
+      he.className = "verse-he";
+      he.textContent = heVerses[i] || "";
+      const en = document.createElement("p");
+      en.className = "verse-en";
+      en.textContent = enVerses[i] || "";
+      block.appendChild(he);
+      block.appendChild(en);
+      versesEl.appendChild(block);
     }
   }
 
-  function showInspector(word) {
-    if (!word) {
-      inspector.classList.add("empty");
-      inspector.innerHTML = "Tap a word to see its translation.";
-      return;
-    }
-    inspector.classList.remove("empty");
-    inspector.innerHTML = "";
-    const he = document.createElement("span");
-    he.className = "ins-he";
-    he.textContent = word.he;
-    const textWrap = document.createElement("span");
-    textWrap.className = "ins-text";
-    const translit = document.createElement("span");
-    translit.className = "ins-translit";
-    translit.textContent = word.translit;
-    const gloss = document.createElement("span");
-    gloss.className = "ins-gloss";
-    gloss.textContent = word.gloss;
-    textWrap.appendChild(translit);
-    textWrap.appendChild(gloss);
-    inspector.appendChild(he);
-    inspector.appendChild(textWrap);
-  }
-
-  function renderHebrew() {
-    hebrewLine.classList.remove("verses");
-    hebrewLine.innerHTML = "";
-    const words = currentWords();
-    words.forEach((word, idx) => {
-      const span = document.createElement("span");
-      span.className = "word";
-      span.textContent = word.he;
-      span.setAttribute("role", "button");
-      span.setAttribute("tabindex", "0");
-      span.setAttribute("aria-pressed", "false");
-      span.addEventListener("click", () => selectWord(idx));
-      span.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          selectWord(idx);
-        }
-      });
-      hebrewLine.appendChild(span);
-    });
-    inspector.classList.add("empty");
-    inspector.innerHTML = "Tap a word to see its translation.";
-  }
-
-  function renderVerses(heVerses) {
-    hebrewLine.classList.add("verses");
-    hebrewLine.innerHTML = "";
-    heVerses.forEach((verse) => {
-      const p = document.createElement("p");
-      p.className = "verse";
-      p.textContent = verse;
-      hebrewLine.appendChild(p);
-    });
-    inspector.classList.add("empty");
-    inspector.innerHTML = "Word-by-word isn't available yet for prayers loaded from Sefaria — showing the full text only.";
-  }
-
-  function renderStatusMessage(message) {
-    hebrewLine.classList.remove("verses");
-    hebrewLine.innerHTML = "";
-    const span = document.createElement("span");
-    span.className = "status-msg";
-    span.textContent = message;
-    hebrewLine.appendChild(span);
-    inspector.classList.add("empty");
-    inspector.innerHTML = "Tap a word to see its translation.";
-  }
-
-  function selectWord(idx) {
-    const words = currentWords();
-    hebrewLine.querySelectorAll(".word").forEach((el, i) => {
-      el.setAttribute("aria-pressed", i === idx ? "true" : "false");
-    });
-    showInspector(words[idx]);
-  }
-
-  async function render() {
-    renderControls();
-    const p = PRAYERS[state.prayer];
+  async function loadAndShow(p) {
     headHe.textContent = p.nameHe;
     headEn.textContent = p.nameEn;
-    sourceTag.classList.toggle("visible", p.source === "sefaria");
-
-    if (p.source === "sefaria") {
-      if (!p._data) {
-        fullTranslationText.textContent = "";
-        renderStatusMessage("Loading from Sefaria…");
-        try {
-          p._data = await fetchSefariaText(p.sefariaRef);
-        } catch (err) {
-          renderStatusMessage("Couldn't load this prayer — you're likely offline and it hasn't been cached yet. Connect once to download it.");
-          fullTranslationText.textContent = "";
-          return;
-        }
-      }
-      fullTranslationText.textContent = p._data.enVerses.join(" ");
-      renderVerses(p._data.heVerses);
-    } else {
-      fullTranslationText.textContent = p.fullTranslation;
-      renderHebrew();
+    showStatusMessage("Loading…");
+    try {
+      const data = await fetchSefariaText(p.ref);
+      if (state.prayerId !== p.id) return;
+      renderVersePairs(data.heVerses, data.enVerses);
+    } catch (err) {
+      if (state.prayerId !== p.id) return;
+      showStatusMessage("Couldn't load this prayer — you're likely offline and it hasn't been downloaded yet. Connect once and use “Download all”.");
     }
   }
 
-  render();
+  function updateDownloadBanner() {
+    const missing = PRAYERS.filter((p) => !isCached(p.ref));
+    if (missing.length === 0) {
+      downloadStatus.textContent = "All " + PRAYERS.length + " prayers downloaded — available offline.";
+      downloadBtn.style.display = "none";
+    } else {
+      downloadStatus.textContent = (PRAYERS.length - missing.length) + " of " + PRAYERS.length + " downloaded.";
+      downloadBtn.style.display = "";
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = "Download all";
+    }
+  }
+
+  downloadBtn.addEventListener("click", async () => {
+    downloadBtn.disabled = true;
+    const missing = PRAYERS.filter((p) => !isCached(p.ref));
+    for (let i = 0; i < missing.length; i++) {
+      downloadStatus.textContent = "Downloading " + (i + 1) + " of " + missing.length + "…";
+      try { await fetchSefariaText(missing[i].ref); } catch (err) { /* skip and continue */ }
+    }
+    updateDownloadBanner();
+    renderPrayerPills();
+    if (isCached(currentPrayer().ref)) loadAndShow(currentPrayer());
+  });
+
+  renderPrayerPills();
+  updateDownloadBanner();
+  loadAndShow(currentPrayer());
 
   const SCALE_STEPS = [0.8, 0.9, 1, 1.15, 1.3, 1.5, 1.75];
   const sizeDec = document.getElementById("size-dec");
@@ -700,7 +533,7 @@
   function updateStatus() {
     const online = navigator.onLine;
     statusBar.dataset.state = online ? "online" : "offline";
-    statusText.textContent = online ? "Online" : "Offline — showing cached prayers";
+    statusText.textContent = online ? "Online" : "Offline — showing downloaded prayers";
   }
   window.addEventListener("online", updateStatus);
   window.addEventListener("offline", updateStatus);

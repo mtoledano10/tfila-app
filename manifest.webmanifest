@@ -1,7 +1,7 @@
 {
   "name": "Siddur Interlinear",
   "short_name": "Siddur",
-  "description": "Hebrew-English word-by-word prayer book",
+  "description": "Hebrew-English prayer book, verse by verse, offline-ready",
   "start_url": "./index.html",
   "scope": "./",
   "id": "./",
